@@ -1,0 +1,20 @@
+# アプリケーションを動かすための処理を記述しているファイル
+#タブで字下げしてはならない！！！！
+# ComposeFileのバージョン
+#バージョンによって書き方が違う
+version: "3.9"
+
+# 各要素のこと。
+services:
+# 任意の名前
+  proxy:
+    container_name: dnpk-proxy
+    # ↓Dockerfileがあるディレクトリ
+    # DockerHubから持ってくる場合はimage:イメージ名
+    build: ./docker/nginx
+    ports:
+      - "8000:80"
+    volumes:
+    # ローカルマシンのdefault.confと仮想コンテナ（ホスト）のdefault.confを同期
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - "./src:/usr/share/nginx/html" 
