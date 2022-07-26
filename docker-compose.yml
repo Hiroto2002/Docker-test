@@ -17,4 +17,26 @@ services:
     volumes:
     # ローカルマシンのdefault.confと仮想コンテナ（ホスト）のdefault.confを同期
       - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
-      - "./src:/usr/share/nginx/html" 
+      - "./src:/usr/share/nginx/html"
+  
+  app:
+    container_name: dnpk-app
+    build: ./docker/php
+    volumes:
+      - ./docker/php/php.ini:/usr/local/php/php.ini
+      - ./src:/var/www/html
+  db: 
+    container_name: dnpk-db
+    build: ./docker/mysql
+    ports:
+      - 3306:3306
+    volumes:
+      - dnpk-db-volume:/var/lib/mysql
+    # MYSQLから参照される環境変数をdocker-compose.ymlに設定 
+    environment:
+      MYSQL_DATABASE: laravel_db
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+volumes:
+  dnpk-db-volume:
