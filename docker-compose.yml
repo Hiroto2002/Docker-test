@@ -25,18 +25,33 @@ services:
     volumes:
       - ./docker/php/php.ini:/usr/local/php/php.ini
       - ./src:/var/www/html
+
   db: 
     container_name: dnpk-db
     build: ./docker/mysql
     ports:
       - 3306:3306
     volumes:
+      - ./docker/mysql/my.cnf:/etc/mysql/my.cnf
       - dnpk-db-volume:/var/lib/mysql
     # MYSQLから参照される環境変数をdocker-compose.ymlに設定 
     environment:
+    # 初期のデータベース名
       MYSQL_DATABASE: laravel_db
+    # ルートユーザのパスワード
       MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_USER: user
-      MYSQL_PASSWORD: password
+      # MYSQL_USER: user
+      # MYSQL_PASSWORD: password
+  
+  phpmyadmin:
+    container_name: dnpk-phpadmin
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - 8001:80
+    environment:
+      - PMA_ARBITRARY=1
+      - PMA_HOST=db
+      - PMA_ROOT_PASSWORD=rootpassword
+
 volumes:
   dnpk-db-volume:
